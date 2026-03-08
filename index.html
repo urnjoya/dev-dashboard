@@ -7,32 +7,37 @@
 <style>
 
 body{
-font-family: Arial, sans-serif;
+font-family:system-ui,Arial;
+margin:0;
 background:#fff;
-color:#000;
-margin:20px;
+color:#111;
 }
 
-h1{
-margin-bottom:10px;
+body.dark{
+background:#111;
+color:#eee;
+}
+
+header{
+padding:12px 16px;
+border-bottom:1px solid #ccc;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
 
 nav button{
-margin:5px;
-padding:8px 12px;
-border:1px solid #000;
-background:#fff;
+margin-right:6px;
+padding:6px 10px;
 cursor:pointer;
 }
 
-section{
-display:none;
-margin-top:20px;
+main{
+padding:16px;
 }
 
-.active{
-display:block;
-}
+section{display:none;}
+section.active{display:block;}
 
 table{
 border-collapse:collapse;
@@ -42,13 +47,17 @@ margin-top:10px;
 
 td,th{
 border:1px solid #ccc;
-padding:8px;
-text-align:left;
+padding:6px;
 }
 
-input,select{
+input,select,textarea{
 padding:6px;
-margin:5px;
+margin:4px;
+}
+
+.dark table td,
+.dark table th{
+border-color:#444;
 }
 
 </style>
@@ -56,15 +65,30 @@ margin:5px;
 
 <body>
 
-<h1>Dev Dashboard</h1>
+<header>
 
-<nav>
+<div>
+<b>DEV DASHBOARD</b>
+</div>
+
+<div>
+<button onclick="toggleDark()">🌙</button>
+</div>
+
+</header>
+
+<nav style="padding:10px">
+
 <button onclick="show('overview')">Overview</button>
 <button onclick="show('pages')">Pages</button>
-<button onclick="show('changes')">Changes</button>
+<button onclick="show('testing')">Testing</button>
 <button onclick="show('bugs')">Bugs</button>
+<button onclick="show('history')">History</button>
 <button onclick="show('backup')">Backup</button>
+
 </nav>
+
+<main>
 
 <!-- OVERVIEW -->
 
@@ -72,9 +96,7 @@ margin:5px;
 
 <h2>Overview</h2>
 
-<p>Total Pages: <span id="totalPages">0</span></p>
-<p>Total Changes: <span id="totalChanges">0</span></p>
-<p>Total Bugs: <span id="totalBugs">0</span></p>
+<div id="stats"></div>
 
 </section>
 
@@ -84,38 +106,97 @@ margin:5px;
 
 <h2>Pages</h2>
 
-<input id="pageName" placeholder="Page name">
+<input id="pageName" placeholder="page name">
 <select id="pageStatus">
+<option value="">none</option>
 <option>pending</option>
 <option>testing</option>
 <option>complete</option>
 </select>
 
-<input id="pageNotes" placeholder="Notes">
+<label>
+<input type="checkbox" id="pageUploaded"> uploaded
+</label>
 
-<button onclick="addPage()">Add Page</button>
+<button onclick="addPage()">Add</button>
+
+<br>
+
+<input id="pageSearch" placeholder="search page">
 
 <table id="pagesTable">
 <tr>
-<th>Name</th>
+<th>Page</th>
 <th>Status</th>
-<th>Notes</th>
+<th>Uploaded</th>
 </tr>
 </table>
 
 </section>
 
-<!-- CHANGES -->
+<!-- TESTING -->
 
-<section id="changes">
+<section id="testing">
 
-<h2>Global Changes</h2>
+<h2>Testing</h2>
 
-<input id="changeText" placeholder="Change description">
+<h3>Physical Testing</h3>
 
-<button onclick="addChange()">Add</button>
+<select id="phyPage"></select>
+<select id="phyDevice">
+<option>mobile</option>
+<option>tablet</option>
+<option>desktop</option>
+</select>
 
-<ul id="changesList"></ul>
+<select id="phyResult">
+<option>ok</option>
+<option>issue</option>
+</select>
+
+<input id="phyNote" placeholder="note">
+
+<button onclick="addPhysical()">Add</button>
+
+<ul id="phyList"></ul>
+
+<hr>
+
+<h3>Code Review</h3>
+
+<select id="codePage"></select>
+
+<select id="codeType">
+<option>html</option>
+<option>seo</option>
+<option>accessibility</option>
+<option>performance</option>
+</select>
+
+<input id="codeNote" placeholder="notes">
+
+<button onclick="addCode()">Add</button>
+
+<ul id="codeList"></ul>
+
+<hr>
+
+<h3>Tools Analysis</h3>
+
+<select id="toolPage"></select>
+
+<select id="toolName">
+<option>analytics</option>
+<option>heatmap</option>
+<option>lighthouse</option>
+<option>search console</option>
+</select>
+
+<input id="toolResult" placeholder="summary">
+
+<button onclick="addTool()">Add</button>
+
+<ul id="toolList"></ul>
 
 </section>
 
@@ -125,12 +206,45 @@ margin:5px;
 
 <h2>Bugs</h2>
 
-<input id="bugPage" placeholder="Page">
-<input id="bugText" placeholder="Issue">
+<select id="bugPage"></select>
 
-<button onclick="addBug()">Add Bug</button>
+<input id="bugIssue" placeholder="issue">
 
-<ul id="bugsList"></ul>
+<select id="bugSource">
+<option>physical testing</option>
+<option>code review</option>
+<option>tool analysis</option>
+<option>manual</option>
+</select>
+
+<select id="bugPriority">
+<option>low</option>
+<option>medium</option>
+<option>high</option>
+</select>
+
+<button onclick="addBug()">Add</button>
+
+<table id="bugsTable">
+
+<tr>
+<th>Page</th>
+<th>Issue</th>
+<th>Status</th>
+<th>Source</th>
+</tr>
+
+</table>
+
+</section>
+
+<!-- HISTORY -->
+
+<section id="history">
+
+<h2>Work History</h2>
+
+<ul id="historyList"></ul>
 
 </section>
 
@@ -140,56 +254,138 @@ margin:5px;
 
 <h2>Backup</h2>
 
-<button onclick="exportData()">Export Data</button>
+<button onclick="exportData()">Export JSON</button>
 
 <br><br>
 
 <input type="file" id="importFile">
 
-<button onclick="importData()">Import Data</button>
+<button onclick="importData()">Import</button>
 
 </section>
 
+</main>
+
 <script>
 
-let data = JSON.parse(localStorage.getItem("devDashboardData")) || {
+let data = JSON.parse(localStorage.getItem("devDash")) || {
+
 pages:[],
-changes:[],
-bugs:[]
+bugs:[],
+testing:{physical:[],code:[],tools:[]},
+history:[]
+
 };
 
 function save(){
-localStorage.setItem("devDashboardData",JSON.stringify(data));
+
+localStorage.setItem("devDash",JSON.stringify(data));
 render();
+
 }
 
 function show(id){
 
-document.querySelectorAll("section").forEach(s=>{
-s.classList.remove("active");
-});
+document.querySelectorAll("section")
+.forEach(s=>s.classList.remove("active"));
 
 document.getElementById(id).classList.add("active");
 
 }
 
+function addHistory(text){
+
+data.history.unshift({
+date:new Date().toISOString().slice(0,10),
+text
+});
+
+}
+
 function addPage(){
 
-let name=document.getElementById("pageName").value;
-let status=document.getElementById("pageStatus").value;
-let notes=document.getElementById("pageNotes").value;
+let name=pageName.value.trim();
+if(!name)return;
 
-data.pages.push({name,status,notes});
+data.pages.push({
+name,
+status:pageStatus.value,
+uploaded:pageUploaded.checked
+});
+
+addHistory("page added "+name);
 
 save();
 
 }
 
-function addChange(){
+function renderPages(){
 
-let text=document.getElementById("changeText").value;
+let q=pageSearch.value.toLowerCase();
 
-data.changes.push(text);
+pagesTable.innerHTML=
+"<tr><th>Page</th><th>Status</th><th>Uploaded</th></tr>";
+
+data.pages
+.filter(p=>p.name.toLowerCase().includes(q))
+.forEach(p=>{
+
+pagesTable.innerHTML+=`
+<tr>
+<td>${p.name}</td>
+<td>${p.status||""}</td>
+<td>${p.uploaded?"✔":""}</td>
+</tr>
+`;
+
+});
+
+}
+
+function addPhysical(){
+
+let p=phyPage.value;
+
+data.testing.physical.push({
+page:p,
+device:phyDevice.value,
+result:phyResult.value,
+note:phyNote.value
+});
+
+addHistory("physical test "+p);
+
+save();
+
+}
+
+function addCode(){
+
+let p=codePage.value;
+
+data.testing.code.push({
+page:p,
+type:codeType.value,
+note:codeNote.value
+});
+
+addHistory("code review "+p);
+
+save();
+
+}
+
+function addTool(){
+
+let p=toolPage.value;
+
+data.testing.tools.push({
+page:p,
+tool:toolName.value,
+result:toolResult.value
+});
+
+addHistory("tool analysis "+p);
 
 save();
 
@@ -197,64 +393,123 @@ save();
 
 function addBug(){
 
-let page=document.getElementById("bugPage").value;
-let issue=document.getElementById("bugText").value;
+let p=bugPage.value;
 
-data.bugs.push(page+" - "+issue);
+data.bugs.push({
+page:p,
+issue:bugIssue.value,
+source:bugSource.value,
+priority:bugPriority.value,
+status:"open"
+});
+
+addHistory("bug "+p);
 
 save();
 
 }
 
-function render(){
+function renderBugs(){
 
-let pagesTable=document.getElementById("pagesTable");
+bugsTable.innerHTML=
+"<tr><th>Page</th><th>Issue</th><th>Status</th><th>Source</th></tr>";
 
-pagesTable.innerHTML="<tr><th>Name</th><th>Status</th><th>Notes</th></tr>";
+data.bugs.forEach((b,i)=>{
 
-data.pages.forEach(p=>{
-
-let row=`
+bugsTable.innerHTML+=`
 <tr>
-<td>${p.name}</td>
-<td>${p.status}</td>
-<td>${p.notes}</td>
+<td>${b.page}</td>
+<td>${b.issue}</td>
+<td>
+<select onchange="updateBug(${i},this.value)">
+<option ${b.status=="open"?"selected":""}>open</option>
+<option ${b.status=="fixed"?"selected":""}>fixed</option>
+</select>
+</td>
+<td>${b.source}</td>
 </tr>
 `;
 
-pagesTable.innerHTML+=row;
-
 });
 
-let changesList=document.getElementById("changesList");
+}
 
-changesList.innerHTML="";
+function updateBug(i,v){
 
-data.changes.forEach(c=>{
-let li=document.createElement("li");
-li.textContent=c;
-changesList.appendChild(li);
+data.bugs[i].status=v;
+
+addHistory("bug status changed");
+
+save();
+
+}
+
+function renderTesting(){
+
+phyList.innerHTML="";
+data.testing.physical.forEach(t=>{
+phyList.innerHTML+=`<li>${t.page} ${t.device} ${t.result}</li>`;
 });
 
-let bugsList=document.getElementById("bugsList");
-
-bugsList.innerHTML="";
-
-data.bugs.forEach(b=>{
-let li=document.createElement("li");
-li.textContent=b;
-bugsList.appendChild(li);
+codeList.innerHTML="";
+data.testing.code.forEach(t=>{
+codeList.innerHTML+=`<li>${t.page} ${t.type}</li>`;
 });
 
-document.getElementById("totalPages").textContent=data.pages.length;
-document.getElementById("totalChanges").textContent=data.changes.length;
-document.getElementById("totalBugs").textContent=data.bugs.length;
+toolList.innerHTML="";
+data.testing.tools.forEach(t=>{
+toolList.innerHTML+=`<li>${t.page} ${t.tool}</li>`;
+});
+
+}
+
+function renderHistory(){
+
+historyList.innerHTML="";
+
+data.history.forEach(h=>{
+historyList.innerHTML+=`<li>${h.date} - ${h.text}</li>`;
+});
+
+}
+
+function renderStats(){
+
+let total=data.pages.length;
+
+let uploaded=data.pages.filter(p=>p.uploaded).length;
+
+let openBugs=data.bugs.filter(b=>b.status=="open").length;
+
+stats.innerHTML=`
+<p>Total Pages: ${total}</p>
+<p>Uploaded: ${uploaded}</p>
+<p>Open Bugs: ${openBugs}</p>
+`;
+
+}
+
+function updatePageSelectors(){
+
+let options=data.pages
+.map(p=>`<option>${p.name}</option>`)
+.join("");
+
+["bugPage","phyPage","codePage","toolPage"]
+.forEach(id=>{
+
+document.getElementById(id).innerHTML=options;
+
+});
 
 }
 
 function exportData(){
 
-let blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+let blob=new Blob(
+[JSON.stringify(data,null,2)],
+{type:"application/json"}
+);
 
 let a=document.createElement("a");
 
@@ -268,11 +523,13 @@ a.click();
 
 function importData(){
 
-let file=document.getElementById("importFile").files[0];
+let f=importFile.files[0];
 
-let reader=new FileReader();
+if(!f)return;
 
-reader.onload=function(e){
+let r=new FileReader();
+
+r.onload=e=>{
 
 data=JSON.parse(e.target.result);
 
@@ -280,9 +537,52 @@ save();
 
 };
 
-reader.readAsText(file);
+r.readAsText(f);
 
 }
+
+function toggleDark(){
+
+document.body.classList.toggle("dark");
+
+}
+
+document.addEventListener("keydown",e=>{
+
+if(e.ctrlKey && e.key==="p"){
+e.preventDefault();
+show("pages");
+}
+
+if(e.ctrlKey && e.key==="b"){
+e.preventDefault();
+show("bugs");
+}
+
+if(e.ctrlKey && e.key==="t"){
+e.preventDefault();
+show("testing");
+}
+
+if(e.ctrlKey && e.key==="s"){
+e.preventDefault();
+exportData();
+}
+
+});
+
+function render(){
+
+renderPages();
+renderBugs();
+renderTesting();
+renderHistory();
+renderStats();
+updatePageSelectors();
+
+}
+
+pageSearch.oninput=renderPages;
 
 render();
 
