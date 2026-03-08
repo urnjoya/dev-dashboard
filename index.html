@@ -92,7 +92,7 @@
     <button onclick="show('bugs')">Bugs</button>
     <button onclick="show('history')">History</button>
     <button onclick="show('backup')">Backup</button>
-
+<button onclick="show('notes')">Notes</button>
   </nav>
 
   <main>
@@ -108,7 +108,19 @@
     </section>
 
     <!-- PAGES -->
+<section id="notes">
 
+<h2>Notes</h2>
+
+<textarea id="noteText" rows="4" cols="60" placeholder="write note..."></textarea>
+
+<br>
+
+<button onclick="addNote()">Add Note</button>
+
+<ul id="notesList"></ul>
+
+</section>
     <section id="pages">
 
       <h2>Pages</h2>
@@ -116,6 +128,12 @@
       <input id="pageName" placeholder="page name">
       <select id="pageStatus">
         <option value="">none</option>
+        <option>pending</option>
+        <option>testing</option>
+        <option>complete</option>
+      </select>
+            <select id="pageType">
+        <option value=".html">.html</option>
         <option>pending</option>
         <option>testing</option>
         <option>complete</option>
@@ -280,7 +298,8 @@
       pages: [],
       bugs: [],
       testing: { physical: [], code: [], tools: [] },
-      history: []
+      history: [],
+      notes: []
 
     };
 
@@ -308,7 +327,22 @@
       });
 
     }
+function addNote(){
 
+let text = noteText.value.trim();
+
+if(!text) return;
+
+data.notes.unshift({
+date:new Date().toISOString().slice(0,10),
+text:text
+});
+
+noteText.value="";
+
+save();
+
+}
     function addPage() {
 
       let name = pageName.value.trim();
@@ -415,7 +449,43 @@
       save();
 
     }
+function renderNotes(){
 
+notesList.innerHTML="";
+
+data.notes.forEach(n=>{
+
+notesList.innerHTML+=`
+<li><b>${n.date}</b> - ${n.text}</li>
+`;
+
+});
+
+}
+    function renderNotes(){
+
+notesList.innerHTML="";
+
+data.notes.forEach((n,i)=>{
+
+notesList.innerHTML+=`
+<li>
+<b>${n.date}</b> - ${n.text}
+<button onclick="deleteNote(${i})">x</button>
+</li>
+`;
+
+});
+
+}
+
+function deleteNote(i){
+
+data.notes.splice(i,1);
+
+save();
+
+}
     function renderBugs() {
 
       bugsTable.innerHTML =
@@ -586,6 +656,7 @@
       renderHistory();
       renderStats();
       updatePageSelectors();
+      renderNotes();
 
     }
 
