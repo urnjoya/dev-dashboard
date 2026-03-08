@@ -1,592 +1,600 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>Dev Dashboard</title>
+  <meta charset="UTF-8">
+  <title>Dev Dashboard</title>
 
-<style>
+  <style>
+    body {
+      font-family: system-ui, Arial;
+      margin: 0;
+      background: #fff;
+      color: #111;
+    }
 
-body{
-font-family:system-ui,Arial;
-margin:0;
-background:#fff;
-color:#111;
-}
+    body.dark {
+      background: #111;
+      color: #eee;
+    }
 
-body.dark{
-background:#111;
-color:#eee;
-}
+    header {
+      padding: 12px 16px;
+      border-bottom: 1px solid #ccc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-header{
-padding:12px 16px;
-border-bottom:1px solid #ccc;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
+    nav button {
+      margin-right: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
 
-nav button{
-margin-right:6px;
-padding:6px 10px;
-cursor:pointer;
-}
+    main {
+      padding: 16px;
+    }
 
-main{
-padding:16px;
-}
+    section {
+      display: none;
+    }
 
-section{display:none;}
-section.active{display:block;}
+    section.active {
+      display: block;
+    }
 
-table{
-border-collapse:collapse;
-width:100%;
-margin-top:10px;
-}
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+    }
 
-td,th{
-border:1px solid #ccc;
-padding:6px;
-}
+    td,
+    th {
+      border: 1px solid #ccc;
+      padding: 6px;
+    }
 
-input,select,textarea{
-padding:6px;
-margin:4px;
-}
+    input,
+    select,
+    textarea {
+      padding: 6px;
+      margin: 4px;
+    }
 
-.dark table td,
-.dark table th{
-border-color:#444;
-}
-
-</style>
+    .dark table td,
+    .dark table th {
+      border-color: #444;
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
+  <header>
 
-<div>
-<b>DEV DASHBOARD</b>
-</div>
+    <div>
+      <b>DEV DASHBOARD</b>
+    </div>
 
-<div>
-<button onclick="toggleDark()">🌙</button>
-</div>
+    <div>
+      <button onclick="toggleDark()">🌙</button>
+    </div>
 
-</header>
+  </header>
 
-<nav style="padding:10px">
+  <nav style="padding:10px">
 
-<button onclick="show('overview')">Overview</button>
-<button onclick="show('pages')">Pages</button>
-<button onclick="show('testing')">Testing</button>
-<button onclick="show('bugs')">Bugs</button>
-<button onclick="show('history')">History</button>
-<button onclick="show('backup')">Backup</button>
+    <button onclick="show('overview')">Overview</button>
+    <button onclick="show('pages')">Pages</button>
+    <button onclick="show('testing')">Testing</button>
+    <button onclick="show('bugs')">Bugs</button>
+    <button onclick="show('history')">History</button>
+    <button onclick="show('backup')">Backup</button>
 
-</nav>
+  </nav>
 
-<main>
+  <main>
 
-<!-- OVERVIEW -->
+    <!-- OVERVIEW -->
 
-<section id="overview" class="active">
+    <section id="overview" class="active">
 
-<h2>Overview</h2>
+      <h2>Overview</h2>
 
-<div id="stats"></div>
+      <div id="stats"></div>
 
-</section>
+    </section>
 
-<!-- PAGES -->
+    <!-- PAGES -->
 
-<section id="pages">
+    <section id="pages">
 
-<h2>Pages</h2>
+      <h2>Pages</h2>
 
-<input id="pageName" placeholder="page name">
-<select id="pageStatus">
-<option value="">none</option>
-<option>pending</option>
-<option>testing</option>
-<option>complete</option>
-</select>
+      <input id="pageName" placeholder="page name">
+      <select id="pageStatus">
+        <option value="">none</option>
+        <option>pending</option>
+        <option>testing</option>
+        <option>complete</option>
+      </select>
 
-<label>
-<input type="checkbox" id="pageUploaded"> uploaded
-</label>
+      <label>
+        <input type="checkbox" id="pageUploaded"> uploaded
+      </label>
 
-<button onclick="addPage()">Add</button>
+      <button onclick="addPage()">Add</button>
 
-<br>
+      <br>
 
-<input id="pageSearch" placeholder="search page">
+      <input id="pageSearch" placeholder="search page">
 
-<table id="pagesTable">
-<tr>
-<th>Page</th>
-<th>Status</th>
-<th>Uploaded</th>
-</tr>
-</table>
+      <table id="pagesTable">
+        <tr>
+          <th>Page</th>
+          <th>Status</th>
+          <th>Uploaded</th>
+        </tr>
+      </table>
 
-</section>
+    </section>
 
-<!-- TESTING -->
+    <!-- TESTING -->
 
-<section id="testing">
+    <section id="testing">
 
-<h2>Testing</h2>
+      <h2>Testing</h2>
 
-<h3>Physical Testing</h3>
+      <h3>Physical Testing</h3>
 
-<select id="phyPage"></select>
-<select id="phyDevice">
-<option>mobile</option>
-<option>tablet</option>
-<option>desktop</option>
-</select>
+      <select id="phyPage"></select>
+      <select id="phyDevice">
+        <option>mobile</option>
+        <option>tablet</option>
+        <option>desktop</option>
+      </select>
 
-<select id="phyResult">
-<option>ok</option>
-<option>issue</option>
-</select>
+      <select id="phyResult">
+        <option>ok</option>
+        <option>issue</option>
+      </select>
 
-<input id="phyNote" placeholder="note">
+      <input id="phyNote" placeholder="note">
 
-<button onclick="addPhysical()">Add</button>
+      <button onclick="addPhysical()">Add</button>
 
-<ul id="phyList"></ul>
+      <ul id="phyList"></ul>
 
-<hr>
+      <hr>
 
-<h3>Code Review</h3>
+      <h3>Code Review</h3>
 
-<select id="codePage"></select>
+      <select id="codePage"></select>
 
-<select id="codeType">
-<option>html</option>
-<option>seo</option>
-<option>accessibility</option>
-<option>performance</option>
-</select>
+      <select id="codeType">
+        <option>html</option>
+        <option>seo</option>
+        <option>accessibility</option>
+        <option>performance</option>
+      </select>
 
-<input id="codeNote" placeholder="notes">
+      <input id="codeNote" placeholder="notes">
 
-<button onclick="addCode()">Add</button>
+      <button onclick="addCode()">Add</button>
 
-<ul id="codeList"></ul>
+      <ul id="codeList"></ul>
 
-<hr>
+      <hr>
 
-<h3>Tools Analysis</h3>
+      <h3>Tools Analysis</h3>
 
-<select id="toolPage"></select>
+      <select id="toolPage"></select>
 
-<select id="toolName">
-<option>analytics</option>
-<option>heatmap</option>
-<option>lighthouse</option>
-<option>search console</option>
-</select>
+      <select id="toolName">
+        <option>analytics</option>
+        <option>heatmap</option>
+        <option>lighthouse</option>
+        <option>search console</option>
+      </select>
 
-<input id="toolResult" placeholder="summary">
+      <input id="toolResult" placeholder="summary">
 
-<button onclick="addTool()">Add</button>
+      <button onclick="addTool()">Add</button>
 
-<ul id="toolList"></ul>
+      <ul id="toolList"></ul>
 
-</section>
+    </section>
 
-<!-- BUGS -->
+    <!-- BUGS -->
 
-<section id="bugs">
+    <section id="bugs">
 
-<h2>Bugs</h2>
+      <h2>Bugs</h2>
 
-<select id="bugPage"></select>
+      <select id="bugPage"></select>
 
-<input id="bugIssue" placeholder="issue">
+      <input id="bugIssue" placeholder="issue">
 
-<select id="bugSource">
-<option>physical testing</option>
-<option>code review</option>
-<option>tool analysis</option>
-<option>manual</option>
-</select>
+      <select id="bugSource">
+        <option>physical testing</option>
+        <option>code review</option>
+        <option>tool analysis</option>
+        <option>manual</option>
+      </select>
 
-<select id="bugPriority">
-<option>low</option>
-<option>medium</option>
-<option>high</option>
-</select>
+      <select id="bugPriority">
+        <option>low</option>
+        <option>medium</option>
+        <option>high</option>
+      </select>
 
-<button onclick="addBug()">Add</button>
+      <button onclick="addBug()">Add</button>
 
-<table id="bugsTable">
+      <table id="bugsTable">
 
-<tr>
-<th>Page</th>
-<th>Issue</th>
-<th>Status</th>
-<th>Source</th>
-</tr>
+        <tr>
+          <th>Page</th>
+          <th>Issue</th>
+          <th>Status</th>
+          <th>Source</th>
+        </tr>
 
-</table>
+      </table>
 
-</section>
+    </section>
 
-<!-- HISTORY -->
+    <!-- HISTORY -->
 
-<section id="history">
+    <section id="history">
 
-<h2>Work History</h2>
+      <h2>Work History</h2>
 
-<ul id="historyList"></ul>
+      <ul id="historyList"></ul>
 
-</section>
+    </section>
 
-<!-- BACKUP -->
+    <!-- BACKUP -->
 
-<section id="backup">
+    <section id="backup">
 
-<h2>Backup</h2>
+      <h2>Backup</h2>
 
-<button onclick="exportData()">Export JSON</button>
+      <button onclick="exportData()">Export JSON</button>
 
-<br><br>
+      <br><br>
 
-<input type="file" id="importFile">
+      <input type="file" id="importFile">
 
-<button onclick="importData()">Import</button>
+      <button onclick="importData()">Import</button>
 
-</section>
+    </section>
 
-</main>
+  </main>
 
-<script>
+  <script>
 
-let data = JSON.parse(localStorage.getItem("devDash")) || {
+    let data = JSON.parse(localStorage.getItem("devDash")) || {
 
-pages:[],
-bugs:[],
-testing:{physical:[],code:[],tools:[]},
-history:[]
+      pages: [],
+      bugs: [],
+      testing: { physical: [], code: [], tools: [] },
+      history: []
 
-};
+    };
 
-function save(){
+    function save() {
 
-localStorage.setItem("devDash",JSON.stringify(data));
-render();
+      localStorage.setItem("devDash", JSON.stringify(data));
+      render();
 
-}
+    }
 
-function show(id){
+    function show(id) {
 
-document.querySelectorAll("section")
-.forEach(s=>s.classList.remove("active"));
+      document.querySelectorAll("section")
+        .forEach(s => s.classList.remove("active"));
 
-document.getElementById(id).classList.add("active");
+      document.getElementById(id).classList.add("active");
 
-}
+    }
 
-function addHistory(text){
+    function addHistory(text) {
 
-data.history.unshift({
-date:new Date().toISOString().slice(0,10),
-text
-});
+      data.history.unshift({
+        date: new Date().toISOString().slice(0, 10),
+        text
+      });
 
-}
+    }
 
-function addPage(){
+    function addPage() {
 
-let name=pageName.value.trim();
-if(!name)return;
+      let name = pageName.value.trim();
+      if (!name) return;
 
-data.pages.push({
-name,
-status:pageStatus.value,
-uploaded:pageUploaded.checked
-});
+      data.pages.push({
+        name,
+        status: pageStatus.value,
+        uploaded: pageUploaded.checked
+      });
 
-addHistory("page added "+name);
+      addHistory("page added " + name);
 
-save();
+      save();
 
-}
+    }
 
-function renderPages(){
+    function renderPages() {
 
-let q=pageSearch.value.toLowerCase();
+      let q = pageSearch.value.toLowerCase();
 
-pagesTable.innerHTML=
-"<tr><th>Page</th><th>Status</th><th>Uploaded</th></tr>";
+      pagesTable.innerHTML =
+        "<tr><th>Page</th><th>Status</th><th>Uploaded</th></tr>";
 
-data.pages
-.filter(p=>p.name.toLowerCase().includes(q))
-.forEach(p=>{
+      data.pages
+        .filter(p => p.name.toLowerCase().includes(q))
+        .forEach(p => {
 
-pagesTable.innerHTML+=`
+          pagesTable.innerHTML += `
 <tr>
 <td>${p.name}</td>
-<td>${p.status||""}</td>
-<td>${p.uploaded?"✔":""}</td>
+<td>${p.status || ""}</td>
+<td>${p.uploaded ? "✔" : ""}</td>
 </tr>
 `;
 
-});
+        });
 
-}
+    }
 
-function addPhysical(){
+    function addPhysical() {
 
-let p=phyPage.value;
+      let p = phyPage.value;
 
-data.testing.physical.push({
-page:p,
-device:phyDevice.value,
-result:phyResult.value,
-note:phyNote.value
-});
+      data.testing.physical.push({
+        page: p,
+        device: phyDevice.value,
+        result: phyResult.value,
+        note: phyNote.value
+      });
 
-addHistory("physical test "+p);
+      addHistory("physical test " + p);
 
-save();
+      save();
 
-}
+    }
 
-function addCode(){
+    function addCode() {
 
-let p=codePage.value;
+      let p = codePage.value;
 
-data.testing.code.push({
-page:p,
-type:codeType.value,
-note:codeNote.value
-});
+      data.testing.code.push({
+        page: p,
+        type: codeType.value,
+        note: codeNote.value
+      });
 
-addHistory("code review "+p);
+      addHistory("code review " + p);
 
-save();
+      save();
 
-}
+    }
 
-function addTool(){
+    function addTool() {
 
-let p=toolPage.value;
+      let p = toolPage.value;
 
-data.testing.tools.push({
-page:p,
-tool:toolName.value,
-result:toolResult.value
-});
+      data.testing.tools.push({
+        page: p,
+        tool: toolName.value,
+        result: toolResult.value
+      });
 
-addHistory("tool analysis "+p);
+      addHistory("tool analysis " + p);
 
-save();
+      save();
 
-}
+    }
 
-function addBug(){
+    function addBug() {
 
-let p=bugPage.value;
+      let p = bugPage.value;
 
-data.bugs.push({
-page:p,
-issue:bugIssue.value,
-source:bugSource.value,
-priority:bugPriority.value,
-status:"open"
-});
+      data.bugs.push({
+        page: p,
+        issue: bugIssue.value,
+        source: bugSource.value,
+        priority: bugPriority.value,
+        status: "open"
+      });
 
-addHistory("bug "+p);
+      addHistory("bug " + p);
 
-save();
+      save();
 
-}
+    }
 
-function renderBugs(){
+    function renderBugs() {
 
-bugsTable.innerHTML=
-"<tr><th>Page</th><th>Issue</th><th>Status</th><th>Source</th></tr>";
+      bugsTable.innerHTML =
+        "<tr><th>Page</th><th>Issue</th><th>Status</th><th>Source</th></tr>";
 
-data.bugs.forEach((b,i)=>{
+      data.bugs.forEach((b, i) => {
 
-bugsTable.innerHTML+=`
+        bugsTable.innerHTML += `
 <tr>
 <td>${b.page}</td>
 <td>${b.issue}</td>
 <td>
 <select onchange="updateBug(${i},this.value)">
-<option ${b.status=="open"?"selected":""}>open</option>
-<option ${b.status=="fixed"?"selected":""}>fixed</option>
+<option ${b.status == "open" ? "selected" : ""}>open</option>
+<option ${b.status == "fixed" ? "selected" : ""}>fixed</option>
 </select>
 </td>
 <td>${b.source}</td>
 </tr>
 `;
 
-});
+      });
 
-}
+    }
 
-function updateBug(i,v){
+    function updateBug(i, v) {
 
-data.bugs[i].status=v;
+      data.bugs[i].status = v;
 
-addHistory("bug status changed");
+      addHistory("bug status changed");
 
-save();
+      save();
 
-}
+    }
 
-function renderTesting(){
+    function renderTesting() {
 
-phyList.innerHTML="";
-data.testing.physical.forEach(t=>{
-phyList.innerHTML+=`<li>${t.page} ${t.device} ${t.result}</li>`;
-});
+      phyList.innerHTML = "";
+      data.testing.physical.forEach(t => {
+        phyList.innerHTML += `<li>${t.page} ${t.device} ${t.result}</li>`;
+      });
 
-codeList.innerHTML="";
-data.testing.code.forEach(t=>{
-codeList.innerHTML+=`<li>${t.page} ${t.type}</li>`;
-});
+      codeList.innerHTML = "";
+      data.testing.code.forEach(t => {
+        codeList.innerHTML += `<li>${t.page} ${t.type}</li>`;
+      });
 
-toolList.innerHTML="";
-data.testing.tools.forEach(t=>{
-toolList.innerHTML+=`<li>${t.page} ${t.tool}</li>`;
-});
+      toolList.innerHTML = "";
+      data.testing.tools.forEach(t => {
+        toolList.innerHTML += `<li>${t.page} ${t.tool}</li>`;
+      });
 
-}
+    }
 
-function renderHistory(){
+    function renderHistory() {
 
-historyList.innerHTML="";
+      historyList.innerHTML = "";
 
-data.history.forEach(h=>{
-historyList.innerHTML+=`<li>${h.date} - ${h.text}</li>`;
-});
+      data.history.forEach(h => {
+        historyList.innerHTML += `<li>${h.date} - ${h.text}</li>`;
+      });
 
-}
+    }
 
-function renderStats(){
+    function renderStats() {
 
-let total=data.pages.length;
+      let total = data.pages.length;
 
-let uploaded=data.pages.filter(p=>p.uploaded).length;
+      let uploaded = data.pages.filter(p => p.uploaded).length;
 
-let openBugs=data.bugs.filter(b=>b.status=="open").length;
+      let openBugs = data.bugs.filter(b => b.status == "open").length;
 
-stats.innerHTML=`
+      stats.innerHTML = `
 <p>Total Pages: ${total}</p>
 <p>Uploaded: ${uploaded}</p>
 <p>Open Bugs: ${openBugs}</p>
 `;
 
-}
+    }
 
-function updatePageSelectors(){
+    function updatePageSelectors() {
 
-let options=data.pages
-.map(p=>`<option>${p.name}</option>`)
-.join("");
+      let options = data.pages
+        .map(p => `<option>${p.name}</option>`)
+        .join("");
 
-["bugPage","phyPage","codePage","toolPage"]
-.forEach(id=>{
+      ["bugPage", "phyPage", "codePage", "toolPage"]
+        .forEach(id => {
 
-document.getElementById(id).innerHTML=options;
+          document.getElementById(id).innerHTML = options;
 
-});
+        });
 
-}
+    }
 
-function exportData(){
+    function exportData() {
 
-let blob=new Blob(
-[JSON.stringify(data,null,2)],
-{type:"application/json"}
-);
+      let blob = new Blob(
+        [JSON.stringify(data, null, 2)],
+        { type: "application/json" }
+      );
 
-let a=document.createElement("a");
+      let a = document.createElement("a");
 
-a.href=URL.createObjectURL(blob);
+      a.href = URL.createObjectURL(blob);
 
-a.download="dev-dashboard-backup.json";
+      a.download = "dev-dashboard-backup.json";
 
-a.click();
+      a.click();
 
-}
+    }
 
-function importData(){
+    function importData() {
 
-let f=importFile.files[0];
+      let f = importFile.files[0];
 
-if(!f)return;
+      if (!f) return;
 
-let r=new FileReader();
+      let r = new FileReader();
 
-r.onload=e=>{
+      r.onload = e => {
 
-data=JSON.parse(e.target.result);
+        data = JSON.parse(e.target.result);
 
-save();
+        save();
 
-};
+      };
 
-r.readAsText(f);
+      r.readAsText(f);
 
-}
+    }
 
-function toggleDark(){
+    function toggleDark() {
 
-document.body.classList.toggle("dark");
+      document.body.classList.toggle("dark");
 
-}
+    }
 
-document.addEventListener("keydown",e=>{
+    document.addEventListener("keydown", e => {
 
-if(e.ctrlKey && e.key==="p"){
-e.preventDefault();
-show("pages");
-}
+      if (e.ctrlKey && e.key === "p") {
+        e.preventDefault();
+        show("pages");
+      }
 
-if(e.ctrlKey && e.key==="b"){
-e.preventDefault();
-show("bugs");
-}
+      if (e.ctrlKey && e.key === "b") {
+        e.preventDefault();
+        show("bugs");
+      }
 
-if(e.ctrlKey && e.key==="t"){
-e.preventDefault();
-show("testing");
-}
+      if (e.ctrlKey && e.key === "t") {
+        e.preventDefault();
+        show("testing");
+      }
 
-if(e.ctrlKey && e.key==="s"){
-e.preventDefault();
-exportData();
-}
+      if (e.ctrlKey && e.key === "s") {
+        e.preventDefault();
+        exportData();
+      }
 
-});
+    });
 
-function render(){
+    function render() {
 
-renderPages();
-renderBugs();
-renderTesting();
-renderHistory();
-renderStats();
-updatePageSelectors();
+      renderPages();
+      renderBugs();
+      renderTesting();
+      renderHistory();
+      renderStats();
+      updatePageSelectors();
 
-}
+    }
 
-pageSearch.oninput=renderPages;
+    pageSearch.oninput = renderPages;
 
-render();
+    render();
 
-</script>
+  </script>
 
 </body>
+
 </html>
