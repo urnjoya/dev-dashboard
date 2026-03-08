@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dev Dashboard</title>
+
+<style>
+
+body{
+font-family: Arial, sans-serif;
+background:#fff;
+color:#000;
+margin:20px;
+}
+
+h1{
+margin-bottom:10px;
+}
+
+nav button{
+margin:5px;
+padding:8px 12px;
+border:1px solid #000;
+background:#fff;
+cursor:pointer;
+}
+
+section{
+display:none;
+margin-top:20px;
+}
+
+.active{
+display:block;
+}
+
+table{
+border-collapse:collapse;
+width:100%;
+margin-top:10px;
+}
+
+td,th{
+border:1px solid #ccc;
+padding:8px;
+text-align:left;
+}
+
+input,select{
+padding:6px;
+margin:5px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Dev Dashboard</h1>
+
+<nav>
+<button onclick="show('overview')">Overview</button>
+<button onclick="show('pages')">Pages</button>
+<button onclick="show('changes')">Changes</button>
+<button onclick="show('bugs')">Bugs</button>
+<button onclick="show('backup')">Backup</button>
+</nav>
+
+<!-- OVERVIEW -->
+
+<section id="overview" class="active">
+
+<h2>Overview</h2>
+
+<p>Total Pages: <span id="totalPages">0</span></p>
+<p>Total Changes: <span id="totalChanges">0</span></p>
+<p>Total Bugs: <span id="totalBugs">0</span></p>
+
+</section>
+
+<!-- PAGES -->
+
+<section id="pages">
+
+<h2>Pages</h2>
+
+<input id="pageName" placeholder="Page name">
+<select id="pageStatus">
+<option>pending</option>
+<option>testing</option>
+<option>complete</option>
+</select>
+
+<input id="pageNotes" placeholder="Notes">
+
+<button onclick="addPage()">Add Page</button>
+
+<table id="pagesTable">
+<tr>
+<th>Name</th>
+<th>Status</th>
+<th>Notes</th>
+</tr>
+</table>
+
+</section>
+
+<!-- CHANGES -->
+
+<section id="changes">
+
+<h2>Global Changes</h2>
+
+<input id="changeText" placeholder="Change description">
+
+<button onclick="addChange()">Add</button>
+
+<ul id="changesList"></ul>
+
+</section>
+
+<!-- BUGS -->
+
+<section id="bugs">
+
+<h2>Bugs</h2>
+
+<input id="bugPage" placeholder="Page">
+<input id="bugText" placeholder="Issue">
+
+<button onclick="addBug()">Add Bug</button>
+
+<ul id="bugsList"></ul>
+
+</section>
+
+<!-- BACKUP -->
+
+<section id="backup">
+
+<h2>Backup</h2>
+
+<button onclick="exportData()">Export Data</button>
+
+<br><br>
+
+<input type="file" id="importFile">
+
+<button onclick="importData()">Import Data</button>
+
+</section>
+
+<script>
+
+let data = JSON.parse(localStorage.getItem("devDashboardData")) || {
+pages:[],
+changes:[],
+bugs:[]
+};
+
+function save(){
+localStorage.setItem("devDashboardData",JSON.stringify(data));
+render();
+}
+
+function show(id){
+
+document.querySelectorAll("section").forEach(s=>{
+s.classList.remove("active");
+});
+
+document.getElementById(id).classList.add("active");
+
+}
+
+function addPage(){
+
+let name=document.getElementById("pageName").value;
+let status=document.getElementById("pageStatus").value;
+let notes=document.getElementById("pageNotes").value;
+
+data.pages.push({name,status,notes});
+
+save();
+
+}
+
+function addChange(){
+
+let text=document.getElementById("changeText").value;
+
+data.changes.push(text);
+
+save();
+
+}
+
+function addBug(){
+
+let page=document.getElementById("bugPage").value;
+let issue=document.getElementById("bugText").value;
+
+data.bugs.push(page+" - "+issue);
+
+save();
+
+}
+
+function render(){
+
+let pagesTable=document.getElementById("pagesTable");
+
+pagesTable.innerHTML="<tr><th>Name</th><th>Status</th><th>Notes</th></tr>";
+
+data.pages.forEach(p=>{
+
+let row=`
+<tr>
+<td>${p.name}</td>
+<td>${p.status}</td>
+<td>${p.notes}</td>
+</tr>
+`;
+
+pagesTable.innerHTML+=row;
+
+});
+
+let changesList=document.getElementById("changesList");
+
+changesList.innerHTML="";
+
+data.changes.forEach(c=>{
+let li=document.createElement("li");
+li.textContent=c;
+changesList.appendChild(li);
+});
+
+let bugsList=document.getElementById("bugsList");
+
+bugsList.innerHTML="";
+
+data.bugs.forEach(b=>{
+let li=document.createElement("li");
+li.textContent=b;
+bugsList.appendChild(li);
+});
+
+document.getElementById("totalPages").textContent=data.pages.length;
+document.getElementById("totalChanges").textContent=data.changes.length;
+document.getElementById("totalBugs").textContent=data.bugs.length;
+
+}
+
+function exportData(){
+
+let blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+
+let a=document.createElement("a");
+
+a.href=URL.createObjectURL(blob);
+
+a.download="dev-dashboard-backup.json";
+
+a.click();
+
+}
+
+function importData(){
+
+let file=document.getElementById("importFile").files[0];
+
+let reader=new FileReader();
+
+reader.onload=function(e){
+
+data=JSON.parse(e.target.result);
+
+save();
+
+};
+
+reader.readAsText(file);
+
+}
+
+render();
+
+</script>
+
+</body>
+</html>
